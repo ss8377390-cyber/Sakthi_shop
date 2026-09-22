@@ -974,4 +974,31 @@ def delete_banner(
     db.commit()
     return {"message": f"Banner {banner_id} deleted successfully"}
 
+import os
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
+app = FastAPI()
+
+# ----------------------------------------------------
+# Keep all your existing API routes here first
+# Example:
+# @app.get("/api/products")
+# def get_products(): ...
+# ----------------------------------------------------
+
+# --- SERVE FRONTEND (Place this at the very bottom of main.py) ---
+dist_dir = os.path.join(os.path.dirname(__file__), "dist")
+
+if os.path.exists(dist_dir):
+    # Mount frontend static assets (JS, CSS, SVGs)
+    app.mount("/assets", StaticFiles(directory=os.path.join(dist_dir, "assets")), name="assets")
+
+    # Serve index.html on root and all React Router paths
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        file_path = os.path.join(dist_dir, full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(dist_dir, "index.html"))
