@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import models
 import schemas
 import auth
+import whatsapp_service
 from database import engine, get_db
 
 load_dotenv()
@@ -599,6 +600,17 @@ def create_order(
     db.commit()
     db.refresh(new_order)
 
+    try:
+        whatsapp_service.send_real_whatsapp_message(
+            to_phone=order_in.phone,
+            customer_name=order_in.customer_name,
+            order_id=str(new_order.id),
+            total_amount=order_in.total_amount,
+            status="Confirmed"
+        )
+    except Exception as wa_err:
+        print(f"⚠️ [WHATSAPP DISPATCH EXCEPTION]: {wa_err}")
+
     resp = schemas.OrderResponse.model_validate(new_order)
     return resp
 
@@ -679,8 +691,38 @@ def update_order_status(
     db.commit()
     db.refresh(order)
     
+    whatsapp_service.send_real_whatsapp_message(
+        to_phone=order.phone,
+        customer_name=order.customer_name,
+        order_id=str(order.id),
+        total_amount=order.total_amount,
+        status=order.status
+    )
+
     resp = schemas.OrderResponse.model_validate(order)
     return resp
+
+
+@app.post("/api/whatsapp/send-notification")
+def send_whatsapp_notification(payload: dict):
+    phone = payload.get("phone", "")
+    customer_name = payload.get("customer_name", "Customer")
+    order_id = payload.get("order_id", "")
+    status = payload.get("status", "Pending")
+
+    sent = whatsapp_service.send_real_whatsapp_message(
+        to_phone=phone,
+        customer_name=customer_name,
+        order_id=order_id,
+        status=status
+    )
+
+    return {
+        "status": "success" if sent else "simulated",
+        "message": f"WhatsApp notification processed for {phone}",
+        "whatsapp_business_account": "SakthiShop Official",
+        "dispatch_id": f"WA_SKT_{order_id}_{status.upper()}"
+    }
 
 
 # --- AUTHENTICATION ENDPOINTS ---

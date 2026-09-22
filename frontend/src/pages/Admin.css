@@ -959,4 +959,75 @@
   color: #c62828;
 }
 
+/* Order Status Select Dropdown */
+.admin-status-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid #d8d8d8;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.admin-status-select.pending {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-color: #90caf9;
+}
+
+.admin-status-select.dispatched {
+  background-color: #fff3e0;
+  color: #e65100;
+  border-color: #ffcc80;
+}
+
+.admin-status-select.shipped {
+  background-color: #f3e5f5;
+  color: #4a148c;
+  border-color: #ce93d8;
+}
+
+.admin-status-select.delivered {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border-color: #a5d6a7;
+}
+
+.admin-status-select.cancelled {
+  background-color: #ffebee;
+  color: #b71c1c;
+  border-color: #ef9a9a;
+}
+
+/* WhatsApp Notify Button */
+.whatsapp-notify-btn {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.3);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.whatsapp-notify-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.45);
+  background: linear-gradient(135deg, #22c35e 0%, #0e786b 100%);
+}
+
+.whatsapp-notify-btn:active {
+  transform: translateY(0);
+}
+
 

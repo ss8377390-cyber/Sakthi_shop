@@ -297,6 +297,55 @@ export default function Admin() {
     }
   };
 
+  const sendWhatsAppMessage = async (orderId, status, phone, name) => {
+    if (!phone) return;
+    try {
+      await fetch('http://localhost:8000/api/whatsapp/send-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: phone,
+          customer_name: name || 'Customer',
+          order_id: orderId,
+          status: status
+        })
+      });
+    } catch (err) {
+      console.error("Backend WhatsApp dispatch error:", err);
+    }
+  };
+
+  const handleOrderStatusChange = async (orderId, newStatus, customerPhone, customerName) => {
+    try {
+      const token = localStorage.getItem('sakthi_token');
+      const adminKey = keyInput || 'sakthi_secret_key_2026';
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-API-Key': adminKey
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`http://localhost:8000/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || 'Failed to update order status');
+      }
+
+      showNotification(`Order #SKT${orderId} updated to '${newStatus}'! Automated WhatsApp notice sent to customer.`);
+      fetchOrders();
+      sendWhatsAppMessage(orderId, newStatus, customerPhone, customerName);
+    } catch (err) {
+      showNotification(err.message || 'Failed to update order status', 'error');
+    }
+  };
+
   const resetForm = () => {
     setForm({
       id: null,
@@ -863,48 +912,76 @@ export default function Admin() {
                           <th>Shipping Address</th>
                           <th>Items Ordered</th>
                           <th>Total Paid</th>
-                          <th>Status</th>
+                          <th>Order Status</th>
+                          <th>WhatsApp Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredOrders.map(order => (
-                          <tr key={order.id}>
-                            <td><strong>#SKT{order.id}</strong></td>
-                            <td>
-                              <div style={{ fontWeight: '600' }}>{order.customer_name}</div>
-                              <div style={{ fontSize: '12px', color: '#666' }}>📞 {order.phone}</div>
-                            </td>
-                            <td>
-                              <div style={{ fontSize: '13px' }}>{order.address}</div>
-                              <div style={{ fontSize: '12px', color: '#555' }}>{order.city} - {order.pin}</div>
-                            </td>
-                            <td>
-                              <div style={{ fontSize: '13px' }}>
-                                {order.items && order.items.map((item, idx) => (
-                                  <div key={idx} style={{ marginBottom: '4px' }}>
-                                    • {item.name} <span style={{ color: '#666' }}>x{item.qty}</span> (₹{item.price.toLocaleString('en-IN')})
-                                  </div>
-                                ))}
-                              </div>
-                            </td>
-                            <td>
-                              <div style={{ fontWeight: '700', color: '#212121' }}>₹{order.total_amount.toLocaleString('en-IN')}</div>
-                              <div style={{ fontSize: '11px', color: '#878787' }}>{order.payment_method ? order.payment_method.toUpperCase() : 'UPI'}</div>
-                            </td>
-                            <td>
-                              <span style={{ 
-                                background: '#e3f2fd', 
-                                color: '#0d47a1', 
-                                padding: '4px 8px', 
-                                borderRadius: '4px', 
-                                fontSize: '11px',
-                                fontWeight: '700' 
-                              }}>
-                                {order.status || 'Pending'}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
+                        {filteredOrders.map(order => {
+                          const currentStatus = order.status || 'Pending';
+                          const cleanPhone = order.phone ? order.phone.replace(/\D/g, '') : '';
+                          const targetPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+
+                          return (
+                            <tr key={order.id}>
+                              <td><strong>#SKT{order.id}</strong></td>
+                              <td>
+                                <div style={{ fontWeight: '600', color: '#212121' }}>{order.customer_name}</div>
+                                {order.phone && (
+                                  <a 
+                                    href={`https://wa.me/${targetPhone}?text=${encodeURIComponent(`Hello ${order.customer_name}, regarding your SakthiShop Order #SKT${order.id}...`)}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    style={{ fontSize: '12px', color: '#128C7E', textDecoration: 'none', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}
+                                    title="Click to chat on WhatsApp"
+                                  >
+                                    💬 {order.phone}
+                                  </a>
+                                )}
+                              </td>
+                              <td>
+                                <div style={{ fontSize: '13px' }}>{order.address}</div>
+                                <div style={{ fontSize: '12px', color: '#555' }}>{order.city} - {order.pin}</div>
+                              </td>
+                              <td>
+                                <div style={{ fontSize: '13px' }}>
+                                  {order.items && order.items.map((item, idx) => (
+                                    <div key={idx} style={{ marginBottom: '4px' }}>
+                                      • {item.name} <span style={{ color: '#666' }}>x{item.qty}</span> (₹{item.price.toLocaleString('en-IN')})
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
+                              <td>
+                                <div style={{ fontWeight: '700', color: '#212121' }}>₹{order.total_amount.toLocaleString('en-IN')}</div>
+                                <div style={{ fontSize: '11px', color: '#878787' }}>{order.payment_method ? order.payment_method.toUpperCase() : 'UPI'}</div>
+                              </td>
+                              <td>
+                                <select
+                                  value={currentStatus}
+                                  onChange={(e) => handleOrderStatusChange(order.id, e.target.value, order.phone, order.customer_name)}
+                                  className={`admin-status-select ${currentStatus.toLowerCase()}`}
+                                >
+                                  <option value="Pending">⏳ Pending</option>
+                                  <option value="Dispatched">📦 Dispatched</option>
+                                  <option value="Shipped">🚚 Shipped</option>
+                                  <option value="Delivered">✅ Delivered</option>
+                                  <option value="Cancelled">🚫 Cancelled</option>
+                                </select>
+                              </td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="whatsapp-notify-btn"
+                                  onClick={() => sendWhatsAppMessage(order.id, currentStatus, order.phone, order.customer_name)}
+                                  title="Send WhatsApp status update to customer"
+                                >
+                                  💬 Send WhatsApp
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
