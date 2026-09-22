@@ -215,9 +215,9 @@ export default function Admin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     let currentImageUrl = form.image;
-    
+
     // Auto-upload if user selected an image file but forgot to click "Upload"
     if (imageFile) {
       setIsUploading(true);
@@ -451,24 +451,24 @@ export default function Admin() {
   const filteredOrders = orders.filter(order => {
     if (!orderSearchQuery) return true;
     const query = orderSearchQuery.toLowerCase().trim();
-    
+
     // Check if ID matches (#SKT... or numeric)
-    const orderIdMatch = (order.id && order.id.toString().includes(query)) || 
-                         `#skt${order.id}`.toLowerCase().includes(query) ||
-                         `skt${order.id}`.toLowerCase().includes(query);
-                         
+    const orderIdMatch = (order.id && order.id.toString().includes(query)) ||
+      `#skt${order.id}`.toLowerCase().includes(query) ||
+      `skt${order.id}`.toLowerCase().includes(query);
+
     // Check if customer name matches
     const nameMatch = order.customer_name && order.customer_name.toLowerCase().includes(query);
-    
+
     // Check if phone matches
     const phoneMatch = order.phone && order.phone.toLowerCase().includes(query);
-    
+
     // Check if city matches
     const cityMatch = order.city && order.city.toLowerCase().includes(query);
 
     // Check if status matches
     const statusMatch = order.status && order.status.toLowerCase().includes(query);
-    
+
     return orderIdMatch || nameMatch || phoneMatch || cityMatch || statusMatch;
   });
 
@@ -490,39 +490,39 @@ export default function Admin() {
           <div className="pin-auth-container">
             <div className="pin-dots-container">
               {[...Array(6)].map((_, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className={`pin-dot${i < pin.length ? ' active' : ''}${pinError ? ' error' : ''}`}
                 />
               ))}
             </div>
             <div className="numeric-keypad">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-                <button 
-                  key={num} 
-                  type="button" 
+                <button
+                  key={num}
+                  type="button"
                   className="keypad-btn"
                   onClick={() => handlePinClick(num.toString())}
                 >
                   {num}
                 </button>
               ))}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="keypad-btn action-btn"
                 onClick={handlePinClear}
               >
                 Clear
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="keypad-btn"
                 onClick={() => handlePinClick('0')}
               >
                 0
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="keypad-btn action-btn"
                 onClick={handlePinBackspace}
               >
@@ -538,7 +538,7 @@ export default function Admin() {
   return (
     <div className="admin-page">
       <div className="admin-container">
-        
+
         {/* Notification Toast */}
         {notification.show && (
           <div className={`toast-notification ${notification.type}`}>
@@ -575,7 +575,7 @@ export default function Admin() {
 
         {/* Tab Navigation */}
         <div className="admin-tabs" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-          <button 
+          <button
             type="button"
             onClick={() => setActiveTab('inventory')}
             style={{
@@ -591,7 +591,7 @@ export default function Admin() {
           >
             📦 Inventory Catalog
           </button>
-          <button 
+          <button
             type="button"
             onClick={() => setActiveTab('orders')}
             style={{
@@ -607,7 +607,7 @@ export default function Admin() {
           >
             🛍 Customer Orders ({orders.length})
           </button>
-          <button 
+          <button
             type="button"
             onClick={() => setActiveTab('banners')}
             style={{
@@ -627,222 +627,222 @@ export default function Admin() {
 
         {activeTab === 'inventory' && (
           <div className="admin-layout">
-          {/* Form Side */}
-          <div className="admin-form-col">
-            <div className="admin-card">
-              <h2>{isEditing ? '✏️ Edit Product' : '➕ Add New Product'}</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="form-grid">
-                  <div className="form-group full-width">
-                    <label>Product Name *</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={form.name}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Apple iPhone 15 Pro Max"
-                      required
-                    />
-                  </div>
+            {/* Form Side */}
+            <div className="admin-form-col">
+              <div className="admin-card">
+                <h2>{isEditing ? '✏️ Edit Product' : '➕ Add New Product'}</h2>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-grid">
+                    <div className="form-group full-width">
+                      <label>Product Name *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Apple iPhone 15 Pro Max"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Category *</label>
-                    <select name="category" value={form.category} onChange={handleInputChange}>
-                      <option value="electronics">Electronics</option>
-                      <option value="fashion">Fashion</option>
-                      <option value="home">Home & Kitchen</option>
-                      <option value="beauty">Beauty</option>
-                      <option value="sports">Sports</option>
-                      <option value="books">Books</option>
-                    </select>
-                  </div>
+                    <div className="form-group">
+                      <label>Category *</label>
+                      <select name="category" value={form.category} onChange={handleInputChange}>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="sports">Sports</option>
+                        <option value="books">Books</option>
+                      </select>
+                    </div>
 
-                  <div className="form-group">
-                    <label>Discount (%)</label>
-                    <input
-                      type="number"
-                      name="discount"
-                      value={form.discount}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 10"
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Discount (%)</label>
+                      <input
+                        type="number"
+                        name="discount"
+                        value={form.discount}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 10"
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Price (₹) *</label>
-                    <input
-                      type="number"
-                      name="price"
-                      value={form.price}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 139900"
-                      required
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Price (₹) *</label>
+                      <input
+                        type="number"
+                        name="price"
+                        value={form.price}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 139900"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Original Price (₹) *</label>
-                    <input
-                      type="number"
-                      name="originalPrice"
-                      value={form.originalPrice}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 159900"
-                      required
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Original Price (₹) *</label>
+                      <input
+                        type="number"
+                        name="originalPrice"
+                        value={form.originalPrice}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 159900"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Badge Text</label>
-                    <input
-                      type="text"
-                      name="badge"
-                      value={form.badge}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Best Seller"
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Badge Text</label>
+                      <input
+                        type="text"
+                        name="badge"
+                        value={form.badge}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Best Seller"
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Badge Background Color</label>
-                    <input
-                      type="color"
-                      name="badgeColor"
-                      value={form.badgeColor}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Badge Background Color</label>
+                      <input
+                        type="color"
+                        name="badgeColor"
+                        value={form.badgeColor}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                  {/* Image Options */}
-                  <div className="form-group full-width image-upload-group">
-                    <label>Product Image URL *</label>
-                    <input
-                      type="text"
-                      name="image"
-                      value={form.image}
-                      onChange={handleInputChange}
-                      placeholder="e.g. https://images.unsplash.com/... or uploaded path"
-                      required
-                    />
-                    
-                    <div className="divider-or"><span>OR UPLOAD IMAGE</span></div>
-                    
-                    <div className="file-upload-row">
-                      <input type="file" accept="image/*" onChange={handleFileChange} />
-                      <button
-                        type="button"
-                        onClick={handleUpload}
-                        disabled={!imageFile || isUploading}
-                      >
-                        {isUploading ? 'Uploading...' : 'Upload'}
-                      </button>
+                    {/* Image Options */}
+                    <div className="form-group full-width image-upload-group">
+                      <label>Product Image URL *</label>
+                      <input
+                        type="text"
+                        name="image"
+                        value={form.image}
+                        onChange={handleInputChange}
+                        placeholder="e.g. https://images.unsplash.com/... or uploaded path"
+                        required
+                      />
+
+                      <div className="divider-or"><span>OR UPLOAD IMAGE</span></div>
+
+                      <div className="file-upload-row">
+                        <input type="file" accept="image/*" onChange={handleFileChange} />
+                        <button
+                          type="button"
+                          onClick={handleUpload}
+                          disabled={!imageFile || isUploading}
+                        >
+                          {isUploading ? 'Uploading...' : 'Upload'}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label>Specifications (Comma-separated)</label>
+                      <input
+                        type="text"
+                        name="specs"
+                        value={form.specs}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 12GB RAM, 256GB Storage, 5000mAh Battery"
+                      />
+                    </div>
+
+                    <div className="form-checkbox-row full-width">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="inStock"
+                          checked={form.inStock}
+                          onChange={handleInputChange}
+                        />
+                        <span>In Stock</span>
+                      </label>
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="freeDelivery"
+                          checked={form.freeDelivery}
+                          onChange={handleInputChange}
+                        />
+                        <span>Free Delivery</span>
+                      </label>
                     </div>
                   </div>
 
-                  <div className="form-group full-width">
-                    <label>Specifications (Comma-separated)</label>
-                    <input
-                      type="text"
-                      name="specs"
-                      value={form.specs}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 12GB RAM, 256GB Storage, 5000mAh Battery"
-                    />
+                  <div className="form-action-buttons">
+                    <button type="submit" className="save-btn">
+                      {isEditing ? '💾 Update Product' : '🚀 Add Product'}
+                    </button>
+                    <button type="button" className="cancel-btn" onClick={resetForm}>
+                      Cancel
+                    </button>
                   </div>
-
-                  <div className="form-checkbox-row full-width">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="inStock"
-                        checked={form.inStock}
-                        onChange={handleInputChange}
-                      />
-                      <span>In Stock</span>
-                    </label>
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="freeDelivery"
-                        checked={form.freeDelivery}
-                        onChange={handleInputChange}
-                      />
-                      <span>Free Delivery</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="form-action-buttons">
-                  <button type="submit" className="save-btn">
-                    {isEditing ? '💾 Update Product' : '🚀 Add Product'}
-                  </button>
-                  <button type="button" className="cancel-btn" onClick={resetForm}>
-                    Cancel
-                  </button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
-          </div>
 
-          {/* List Side */}
-          <div className="admin-list-col">
-            <div className="admin-card">
-              <h2>Inventory List ({products.length} Products)</h2>
-              <div className="admin-products-table-wrapper">
-                <table className="admin-products-table">
-                  <thead>
-                    <tr>
-                      <th>Image</th>
-                      <th>Product Details</th>
-                      <th>Price</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products.map(p => (
-                      <tr key={p.id}>
-                        <td>
-                          <img src={p.image} alt={p.name} className="table-product-image" />
-                        </td>
-                        <td>
-                          <div className="table-product-name">{p.name}</div>
-                          <div className="table-product-meta">
-                            <span className="table-category-tag">{p.category}</span>
-                            {p.badge && <span className="table-badge-tag" style={{ background: p.badgeColor }}>{p.badge}</span>}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="table-price">₹{p.price.toLocaleString('en-IN')}</div>
-                          {p.discount > 0 && <div className="table-discount">{p.discount}% Off</div>}
-                        </td>
-                        <td>
-                          <div className="table-actions">
-                            <button className="edit-btn" onClick={() => handleEditClick(p)}>✏️</button>
-                            <button className="delete-btn" onClick={() => handleDeleteClick(p.id)}>🗑</button>
-                          </div>
-                        </td>
+            {/* List Side */}
+            <div className="admin-list-col">
+              <div className="admin-card">
+                <h2>Inventory List ({products.length} Products)</h2>
+                <div className="admin-products-table-wrapper">
+                  <table className="admin-products-table">
+                    <thead>
+                      <tr>
+                        <th>Image</th>
+                        <th>Product Details</th>
+                        <th>Price</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {products.map(p => (
+                        <tr key={p.id}>
+                          <td>
+                            <img src={p.image} alt={p.name} className="table-product-image" />
+                          </td>
+                          <td>
+                            <div className="table-product-name">{p.name}</div>
+                            <div className="table-product-meta">
+                              <span className="table-category-tag">{p.category}</span>
+                              {p.badge && <span className="table-badge-tag" style={{ background: p.badgeColor }}>{p.badge}</span>}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="table-price">₹{p.price.toLocaleString('en-IN')}</div>
+                            {p.discount > 0 && <div className="table-discount">{p.discount}% Off</div>}
+                          </td>
+                          <td>
+                            <div className="table-actions">
+                              <button className="edit-btn" onClick={() => handleEditClick(p)}>✏️</button>
+                              <button className="delete-btn" onClick={() => handleDeleteClick(p.id)}>🗑</button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         )}
 
         {activeTab === 'orders' && (
           <div className="admin-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1.5px solid #f0f0f0', paddingBottom: '12px' }}>
               <h2 style={{ margin: 0, border: 'none', padding: 0 }}>🛍 Customer Checkout Orders</h2>
-              <button 
-                onClick={fetchOrders} 
-                style={{ 
-                  background: '#2874f0', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: '4px', 
-                  padding: '6px 12px', 
+              <button
+                onClick={fetchOrders}
+                style={{
+                  background: '#2874f0',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '6px 12px',
                   cursor: 'pointer',
                   fontWeight: '600'
                 }}
@@ -850,7 +850,7 @@ export default function Admin() {
                 🔄 Refresh
               </button>
             </div>
-            
+
             {loadingOrders ? (
               <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>Loading orders from database...</div>
             ) : orders.length === 0 ? (
@@ -859,7 +859,7 @@ export default function Admin() {
               <>
                 <div className="order-search-container">
                   <span className="order-search-icon">🔍</span>
-                  <input 
+                  <input
                     type="text"
                     className="order-search-input"
                     placeholder="Search by Order ID (#SKT...), customer name, phone, or location..."
@@ -867,8 +867,8 @@ export default function Admin() {
                     onChange={(e) => setOrderSearchQuery(e.target.value)}
                   />
                   {orderSearchQuery && (
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="order-search-clear"
                       onClick={() => setOrderSearchQuery('')}
                       title="Clear search"
@@ -886,7 +886,7 @@ export default function Admin() {
                     <div style={{ fontSize: '32px', marginBottom: '12px' }}>🔍❌</div>
                     <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '8px' }}>No matching orders found</div>
                     <div style={{ fontSize: '14px', color: '#878787', marginBottom: '16px' }}>We couldn't find any orders matching "{orderSearchQuery}".</div>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setOrderSearchQuery('')}
                       style={{
@@ -928,9 +928,9 @@ export default function Admin() {
                               <td>
                                 <div style={{ fontWeight: '600', color: '#212121' }}>{order.customer_name}</div>
                                 {order.phone && (
-                                  <a 
-                                    href={`https://wa.me/${targetPhone}?text=${encodeURIComponent(`Hello ${order.customer_name}, regarding your SakthiShop Order #SKT${order.id}...`)}`} 
-                                    target="_blank" 
+                                  <a
+                                    href={`https://wa.me/${targetPhone}?text=${encodeURIComponent(`Hello ${order.customer_name}, regarding your SakthiShop Order #SKT${order.id}...`)}`}
+                                    target="_blank"
                                     rel="noopener noreferrer"
                                     style={{ fontSize: '12px', color: '#128C7E', textDecoration: 'none', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}
                                     title="Click to chat on WhatsApp"

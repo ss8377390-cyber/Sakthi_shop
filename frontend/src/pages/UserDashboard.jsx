@@ -114,26 +114,26 @@ export default function UserDashboard() {
           </div>
 
           <nav className="dashboard-nav">
-            <button 
+            <button
               className={`nav-item-btn ${activeTab === 'orders' ? 'active' : ''}`}
               onClick={() => { setActiveTab('orders'); setSelectedOrder(null); }}
             >
               🛍️ My Orders
             </button>
-            <button 
+            <button
               className={`nav-item-btn ${activeTab === 'favorites' ? 'active' : ''}`}
               onClick={() => setActiveTab('favorites')}
             >
               ❤️ Favorites ({favorites.length})
             </button>
-            <button 
+            <button
               className={`nav-item-btn ${activeTab === 'profile' ? 'active' : ''}`}
               onClick={() => setActiveTab('profile')}
             >
               👤 Profile Settings
             </button>
             {user.role === 'admin' && (
-              <button 
+              <button
                 className="nav-item-btn admin-gateway-btn"
                 onClick={() => navigate('/admin')}
               >
@@ -149,7 +149,7 @@ export default function UserDashboard() {
 
         {/* Right Content Area */}
         <main className="dashboard-content">
-          
+
           {/* ORDERS TAB */}
           {activeTab === 'orders' && (
             <div className="dashboard-card">
@@ -315,13 +315,13 @@ export default function UserDashboard() {
                           )}
                         </div>
                         <div className="action-row">
-                          <button 
+                          <button
                             className="buy-btn"
                             onClick={() => navigate(`/product/${product.id}`)}
                           >
                             View Product
                           </button>
-                          <button 
+                          <button
                             className="remove-fav-btn"
                             onClick={() => toggleFavorite(product.id)}
                             title="Remove from favorites"
@@ -350,21 +350,21 @@ export default function UserDashboard() {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Full Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      required 
+                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label>Email Address</label>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      required 
+                      required
                     />
                   </div>
                 </div>
@@ -376,21 +376,21 @@ export default function UserDashboard() {
                   <div className="form-row">
                     <div className="form-group">
                       <label>New Password</label>
-                      <input 
-                        type="password" 
+                      <input
+                        type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••" 
+                        placeholder="••••••••"
                       />
                     </div>
 
                     <div className="form-group">
                       <label>Confirm New Password</label>
-                      <input 
-                        type="password" 
+                      <input
+                        type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="••••••••" 
+                        placeholder="••••••••"
                       />
                     </div>
                   </div>

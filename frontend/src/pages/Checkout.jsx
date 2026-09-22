@@ -121,7 +121,7 @@ export default function Checkout() {
       if (formattedWaPhone) {
         const messageText = `🛒 *SakthiShop Official Order Confirmation*\n\nHello *${form.name}*! 👋\nYour Order *${createdOrderId}* has been placed successfully!\n\n💰 *Total Amount:* ₹${finalTotal.toLocaleString('en-IN')}\n📍 *Delivery Address:* ${form.address}, ${form.city} - ${form.pin}\n💳 *Payment Method:* ${form.payment.toUpperCase()}\n\nThank you for shopping with SakthiShop! 🛍️`;
         const waUrl = `https://wa.me/${formattedWaPhone}?text=${encodeURIComponent(messageText)}`;
-        
+
         setTimeout(() => {
           window.open(waUrl, '_blank');
         }, 500);
@@ -169,16 +169,16 @@ export default function Checkout() {
                   <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#25d366', marginBottom: '6px' }}>Order Successful: SakthiShop Order {orderId}</div>
                   <div>Dear <strong>{form.name || 'Customer'}</strong>, your order has been placed successfully!</div>
                   <div style={{ margin: '8px 0', color: '#8696a0', fontSize: '12px' }}>
-                    Tap below to see real-time shipping dates & delivery progress 👇<br/>
+                    Tap below to see real-time shipping dates & delivery progress 👇<br />
                     To pause order updates via WhatsApp, reply STOP.
                   </div>
-                  
+
                   {/* Interactive Button standard in Meta WhatsApp API */}
                   <div style={{ marginTop: '12px', borderTop: '1px solid #2a3942', paddingTop: '10px', textAlign: 'center' }}>
-                    <a 
+                    <a
                       href={`https://wa.me/${cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone}?text=${encodeURIComponent(`🛒 SakthiShop Order ${orderId}\nHi ${form.name}, I want to track my order details.`)}`}
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#53bdeb', fontWeight: '600', fontSize: '13px', textDecoration: 'none' }}
                     >
                       <span>💬</span> Open WhatsApp Chat / Track Order ↗
